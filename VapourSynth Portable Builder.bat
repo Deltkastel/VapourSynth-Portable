@@ -3,7 +3,7 @@ title VapourSynth Portable r59
 
 :: Download URLs (VapourSynth r59 + Python 3.10.6)
 SET dl_7z=https://xidl.github.io/7za.exe
-SET dl_python=https://www.python.org/ftp/python/3.10.6/python-3.10.6-embed-amd64.zip
+SET dl_python=https://globalcdn.nuget.org/packages/python.3.10.6.nupkg
 SET dl_vs=https://github.com/vapoursynth/vapoursynth/releases/download/R59/VapourSynth64-Portable-R59.7z
 SET dl_vsrepogui=https://github.com/theChaosCoder/VSRepoGUI/releases/download/v0.9.7/VSRepoGUI-0.9.7.zip
 SET dl_pedeps=https://github.com/brechtsanders/pedeps/releases/download/0.1.11/pedeps-0.1.11-win64.zip
@@ -31,21 +31,27 @@ wget.exe %wgetparams% "%dl_vs%"
 wget.exe %wgetparams% "%dl_vsrepogui%"
 wget.exe %wgetparams% "%dl_pedeps%"
 wget.exe %wgetparams% "%dl_python%"
-wget.exe %wgetparams% "%dl_pip%"
+::wget.exe %wgetparams% "%dl_pip%"
 echo Done! & echo.
 
 echo Uncompressing files...
-7z.exe x -y "python*" -o"..\VapourSynth">NUL
-copy "get-pip.py" "..\VapourSynth">NUL
+7z.exe x -y "python*.nupkg" "tools" -o".." & ren "..\tools" "VapourSynth"
+::copy "get-pip.py" "..\VapourSynth">NUL
 7z.exe x -y "VapourSynth64*" -o"..\VapourSynth">NUL
 7z.exe x -y "VSRepoGUI*" -o"..\VapourSynth">NUL
 7z.exe e -y "pedeps*" "bin\listpedeps.exe" -o"..\VapourSynth">NUL
 echo Done! & echo.
 
 echo Preparing Python...
-::TODO - insert python310._pth
 cd "..\VapourSynth"
-python.exe get-pip.py
+python -m pip install vspreview --no-warn-script-location
+..\_temp\wget.exe %wgetparams% -O "vapoursynth64\plugins\libvslsmashsource.dll" "https://github.com/Deltkastel/VapourSynth-Portable/raw/main/test_files/libvslsmashsource.dll"
+..\_temp\wget.exe %wgetparams% -O "vapoursynth64\plugins\LibP2P.dll" "https://github.com/Deltkastel/VapourSynth-Portable/raw/main/test_files/LibP2P.dll"
+..\_temp\wget.exe %wgetparams% -O "vapoursynth64\plugins\akarin.dll" "https://github.com/Deltkastel/VapourSynth-Portable/raw/main/test_files/akarin.dll"
+..\_temp\wget.exe %wgetparams% -O "..\test.vpy" "https://raw.githubusercontent.com/Deltkastel/VapourSynth-Portable/main/test_files/test.vpy"
+..\_temp\wget.exe %wgetparams% -O "..\init.bat" "https://raw.githubusercontent.com/Deltkastel/VapourSynth-Portable/main/init.cmd"
+
+del /F /Q ..\_temp & rmdir ..\_temp
 
 :end
 pause
