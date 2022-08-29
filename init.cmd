@@ -11,3 +11,5 @@ doskey vspreview=python -m vspreview $*
 
 ::echo PATH = %path%
 ::echo PYTHONPATH = %PYTHONPATH%
+
+cmd /k
